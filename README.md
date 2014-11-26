@@ -1,0 +1,4 @@
+friendmas
+=========
+
+Impartially allocate friends
