@@ -4,12 +4,25 @@
 import random
 
 friends = open("friends.txt", "r").read().splitlines()
+friends = list(map(lambda s: s.split(), friends))
 
-random.shuffle(friends)
+def relationshiptest(friends):
+    n = len(friends)
+    for i in range(len(friends)):
+        if ((len(friends[i]) == len(friends[(i + 1) % n]) == 2) and
+            (friends[i][1] == friends[(i + 1) % n][1])):
+            return False
+    return True
+
+def randomise(friends):
+    random.shuffle(friends)
+    while not relationshiptest(friends):
+        random.shuffle(friends)
+    return list(map(lambda s: s[0], friends))
+
+
+friends = randomise(friends)
 
 for i in range(len(friends)):
-    if i != len(friends) - 1:
-        print(friends[i], "-->", friends[i + 1])
-    else:
-        print(friends[i], "-->", friends[0])
+    print(friends[i], "-->", friends[(i + 1) % len(friends)])
 
