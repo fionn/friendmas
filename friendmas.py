@@ -3,9 +3,6 @@
 
 import random
 
-friends = open("friends.txt", "r").read().splitlines()
-friends = list(map(lambda s: s.split(), friends))
-
 def relationshiptest(friends):
     n = len(friends)
     for i in range(len(friends)):
@@ -14,14 +11,30 @@ def relationshiptest(friends):
             return False
     return True
 
-def randomise(friends):
+def knoweachother(criteria, friends):
+    for i in range(len(friends)):
+        for criterion in criteria:
+            if (friends[i] == criterion[0] and 
+                (friends[(i + 1) % len(friends)] not in criterion or
+                 friends[(i - 1) % len(friends)] not in criterion)):
+                return False
+    return True
+
+def randomise(friends, criteria):
     random.shuffle(friends)
-    while not relationshiptest(friends):
+    while not (relationshiptest(friends) and 
+               knoweachother(criteria, list(map(lambda s: s[0], friends)))):
         random.shuffle(friends)
     return list(map(lambda s: s[0], friends))
 
 
-friends = randomise(friends)
+friends = open("friends.txt", "r").read().splitlines()
+friends = list(map(lambda s: s.split(), friends))
+
+criteria = open("criteria.txt", "r").read().splitlines()
+criteria = list(map(lambda s: s.split(), criteria))
+
+friends = randomise(friends, criteria)
 
 for i in range(len(friends)):
     print(friends[i], "-->", friends[(i + 1) % len(friends)])
